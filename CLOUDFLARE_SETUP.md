@@ -11,9 +11,21 @@ For deployment, add both values as Worker secrets named `GOOGLE_SHEET_ID` and `G
 
 The sheet stores one record per row with `kind`, `id`, and `payload` columns. The API reads and updates records there; it does not commit changes to Git.
 
-## Protect access
+## Dashboard login
 
-Before sharing the deployed URL, configure **Cloudflare Access** with an allow policy for your email and protect the entire application hostname, including `/api/*`. Access should gate both page requests and API requests. This project intentionally does not implement a separate username/password login page.
+The app has a single-user login page. Authentication is checked server-side, uses a signed, HttpOnly, SameSite=Strict cookie, and protects both dashboard pages and `/api/*` routes. The session expires after seven days.
+
+Configure these values for local development in `.env.local` (Next.js) or `.dev.vars` (Cloudflare Vite development):
+
+```dotenv
+DASHBOARD_USERNAME=your-login-name
+DASHBOARD_PASSWORD=use-a-long-unique-password
+DASHBOARD_SESSION_SECRET=use-a-random-secret-at-least-32-characters-long
+```
+
+For deployment, add all three values as **Worker Secrets**, not plaintext `vars`, under **Workers & Pages > your Worker > Settings > Variables and Secrets**. Generate a unique session secret, for example with `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`. Do not commit credentials or put them in `NEXT_PUBLIC_*` variables. Restart local development after changing `.env.local`.
+
+Use a unique password and configure a Cloudflare rate-limit rule for `/api/auth/login`. Cloudflare Access can also be enabled as an additional protection layer.
 
 ## Build and deploy
 

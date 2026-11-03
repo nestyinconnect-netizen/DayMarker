@@ -14,6 +14,7 @@ import {
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { LogoutButton } from "@/components/logout-button"
 import { MetricCard } from "@/components/planner-shared"
 import { PlannerCalendar } from "@/components/planner-calendar"
 import { PlannerCreateDialog } from "@/components/planner-create-dialog"
@@ -308,6 +309,7 @@ export function PlannerShell({ today }: { today: string }) {
                 <CalendarDays data-icon="inline-start" aria-hidden="true" />
                 Add event
               </Button>
+              <LogoutButton />
             </div>
           </div>
         </header>
